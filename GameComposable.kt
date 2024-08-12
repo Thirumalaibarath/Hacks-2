@@ -13,21 +13,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+var chosenColor by mutableStateOf("")
+
 @Composable
-fun Grid(color : GameRequest)
+fun Grid(color : GameRequest,socket: WebSocketViewModel)
 {
     val gameState  = color.requestGameState
 
-    Log.d("yapp",gameState.toString())
-
     Surface (
         modifier = Modifier.fillMaxSize(),
-        color = Color.Yellow)
+        color = Color.LightGray)
     {
 
         Column(
@@ -41,8 +44,13 @@ fun Grid(color : GameRequest)
                         val cellValue = gameState[rowIndex][colIndex]
 
                         Cell(
+                            rowIndex = rowIndex,
+                            columnIndex = colIndex,
                             color = cellValue,
-                            onClick = { clickedValue ->
+                            onClick = { row,column ->
+                                Log.d("column",column.toString())
+                                Log.d("row",row.toString())
+                                socket.sendMessage(rowInt = row, columnInt = column,color = chosenColor)
                             })
                     }
                 }
@@ -52,16 +60,41 @@ fun Grid(color : GameRequest)
 }
 
 @Composable
+fun ColorPallete()
+{
+    Row(modifier = Modifier.fillMaxSize()
+        .padding(0.dp,0.dp,0.dp,50.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom)
+    {
+        val colors = listOf("#FF5733", "#008000","#FFA500","#8A2BE2","#0000FF","#FFFFFF")
+        for(i in colors.indices){
+            Cell(
+                rowIndex = 0,
+                columnIndex = i,
+                color = colors[i],
+                onClick = { row,column ->
+                    chosenColor = colors[column]
+                })
+        }
+
+
+    }
+}
+
+@Composable
 fun Cell(
+    columnIndex : Int,
+    rowIndex : Int,
     color: String,
-    onClick: (String) -> Unit
+    onClick: (Int,Int) -> Unit
 ) {
     Box(
         modifier = Modifier
-            .size(70.dp)
-            .padding(10.dp)
+            .size(40.dp)
+            .padding(2.dp)
             .border(width = 4.dp,color = Color.Black)
-            .clickable { onClick(color) }
+            .clickable { onClick(rowIndex,columnIndex) }
             .background(color = hexToColor(color)),
     )
 }
