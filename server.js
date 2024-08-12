@@ -8,17 +8,30 @@ const server = app.listen(PORT);
 console.log('Server is running');
 const io = socket(server);
 
-let principle_array = [["#FF5733","#FF5733","#FF5733"],["#FF5733","#FFFFFF","#FFFFFF"],["#FFFFFF","#FFFFFF","#FFFFFF"]]
+var principle_array = [["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"],
+["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"]
+
+]
+
+let clientRow = 0
+let clientColumn = 0
+
 
 
 io.on('connection', (socket) => {
 
     console.log("New socket connection: " + socket.id)
 
-
-    // socket.on('counter', () => {
-    //     io.emit('current_color', principle_array);
-    // })
 
     function emitter()
     {
@@ -28,9 +41,18 @@ io.on('connection', (socket) => {
 
     setInterval(emitter,1000)
 
-    socket.on('message',(data) =>{
-        console.log(data)
+    socket.on('rowInt',(row) =>{
+        clientRow = row
     })
+
+    socket.on('columnInt',(column) =>{
+        clientColumn = column
+    })
+
+    socket.on('color',(color) =>{
+        principle_array[clientRow][clientColumn] = color
+    })
+
 
 })
 
